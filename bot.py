@@ -3,7 +3,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 import requests
 
 # Configura l'API Key
-GOOGLE_PLACES_API_KEY = "la_tua_api_key"
+GOOGLE_PLACES_API_KEY = "AIzaSyBRvc9IGLGyDU9QUujqHsBGaVTQTQpL09s"
 
 # Funzione per ottenere ristoranti
 def get_restaurants(location, radius=5000, keyword=""):
