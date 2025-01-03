@@ -2,8 +2,9 @@ from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 import requests
 
-# Configura l'API Key
-GOOGLE_PLACES_API_KEY = "AIzaSyBRvc9IGLGyDU9QUujqHsBGaVTQTQpL09s"
+# Configura le API Key
+TELEGRAM_BOT_TOKEN = "your_telegram_bot_token"
+GOOGLE_PLACES_API_KEY = "your_google_api_key"
 
 # Funzione per ottenere ristoranti
 def get_restaurants(location, radius=5000, keyword=""):
@@ -18,7 +19,13 @@ def get_restaurants(location, radius=5000, keyword=""):
     response = requests.get(url, params=params).json()
     return response.get("results", [])
 
-# Funzione per cercare ristoranti
+# Comando /start
+def start(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text(
+        "Ciao! Condividi la tua posizione e un tipo di ristorante (es. pizza, sushi) per iniziare!"
+    )
+
+# Comando per cercare ristoranti
 def search(update: Update, context: CallbackContext) -> None:
     if "location" not in context.user_data:
         update.message.reply_text("Prima condividi la tua posizione!")
@@ -45,7 +52,7 @@ def search(update: Update, context: CallbackContext) -> None:
             f"🍴 {name}\n⭐ Rating: {rating}\n📍 {address}"
         )
 
-# Funzione per gestire la posizione
+# Gestione della posizione
 def handle_location(update: Update, context: CallbackContext) -> None:
     user_location = f"{update.message.location.latitude},{update.message.location.longitude}"
     context.user_data["location"] = user_location
@@ -53,10 +60,9 @@ def handle_location(update: Update, context: CallbackContext) -> None:
 
 # Configura il bot
 def main():
-    TOKEN = "il_tuo_telegram_bot_token"
-    updater = Updater(TOKEN)
+    updater = Updater(TELEGRAM_BOT_TOKEN)
 
-    updater.dispatcher.add_handler(CommandHandler("start", lambda u, c: u.message.reply_text("Condividi la tua posizione per iniziare!")))
+    updater.dispatcher.add_handler(CommandHandler("start", start))
     updater.dispatcher.add_handler(CommandHandler("search", search))
     updater.dispatcher.add_handler(MessageHandler(Filters.location, handle_location))
 
